@@ -46,15 +46,15 @@ class AppUpdateChecker {
 
 val GITHUB_REPO: String by lazy {
     if (BuildConfig.PREVIEW) {
-        "aniyomiorg/aniyomi-preview"
+        "daiv05/aniyomi-famly"
     } else {
-        "aniyomiorg/aniyomi"
+        "daiv05/aniyomi-famly"
     }
 }
 
 val RELEASE_TAG: String by lazy {
     if (BuildConfig.PREVIEW) {
-        "r${BuildConfig.COMMIT_COUNT}"
+        "v${BuildConfig.VERSION_NAME}"
     } else {
         "v${BuildConfig.VERSION_NAME}"
     }

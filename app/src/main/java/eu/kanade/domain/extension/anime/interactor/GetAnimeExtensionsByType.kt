@@ -13,7 +13,7 @@ class GetAnimeExtensionsByType(
 ) {
 
     fun subscribe(): Flow<AnimeExtensions> {
-        val showNsfwSources = preferences.showNsfwSource().get()
+        val showNsfwSources = false;
 
         return combine(
             preferences.enabledLanguages().changes(),

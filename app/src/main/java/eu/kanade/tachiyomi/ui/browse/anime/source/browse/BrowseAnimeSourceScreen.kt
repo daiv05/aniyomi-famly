@@ -1,5 +1,6 @@
 package eu.kanade.tachiyomi.ui.browse.anime.source.browse
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -213,22 +214,7 @@ data class BrowseAnimeSourceScreen(
                 onLocalAnimeSourceHelpClick = onHelpClick,
                 onAnimeClick = { navigator.push((AnimeScreen(it.id, true))) },
                 onAnimeLongClick = { anime ->
-                    scope.launchIO {
-                        val duplicateAnime = screenModel.getDuplicateAnimelibAnime(anime)
-                        when {
-                            anime.favorite -> screenModel.setDialog(
-                                BrowseAnimeSourceScreenModel.Dialog.RemoveAnime(anime),
-                            )
-                            duplicateAnime != null -> screenModel.setDialog(
-                                BrowseAnimeSourceScreenModel.Dialog.AddDuplicateAnime(
-                                    anime,
-                                    duplicateAnime,
-                                ),
-                            )
-                            else -> screenModel.addFavorite(anime)
-                        }
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    }
+                    Log.d("Anime long clicked", anime.title)
                 },
             )
         }

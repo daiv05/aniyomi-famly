@@ -1,5 +1,6 @@
 package eu.kanade.tachiyomi.ui.browse.manga.source.browse
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -213,22 +214,7 @@ data class BrowseMangaSourceScreen(
                 onLocalSourceHelpClick = onHelpClick,
                 onMangaClick = { navigator.push((MangaScreen(it.id, true))) },
                 onMangaLongClick = { manga ->
-                    scope.launchIO {
-                        val duplicateManga = screenModel.getDuplicateLibraryManga(manga)
-                        when {
-                            manga.favorite -> screenModel.setDialog(
-                                BrowseMangaSourceScreenModel.Dialog.RemoveManga(manga),
-                            )
-                            duplicateManga != null -> screenModel.setDialog(
-                                BrowseMangaSourceScreenModel.Dialog.AddDuplicateManga(
-                                    manga,
-                                    duplicateManga,
-                                ),
-                            )
-                            else -> screenModel.addFavorite(manga)
-                        }
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    }
+                    Log.d("Manga long clicked", manga.title)
                 },
             )
         }

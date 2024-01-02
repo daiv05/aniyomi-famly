@@ -42,9 +42,7 @@ import java.io.File
 internal object MangaExtensionLoader {
 
     private val preferences: SourcePreferences by injectLazy()
-    private val loadNsfwSource by lazy {
-        preferences.showNsfwSource().get()
-    }
+    private const val loadNsfwSource: Boolean = false;
 
     private const val EXTENSION_FEATURE = "tachiyomi.extension"
     private const val METADATA_SOURCE_CLASS = "tachiyomi.extension.class"

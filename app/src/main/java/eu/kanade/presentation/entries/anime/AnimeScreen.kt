@@ -1,5 +1,7 @@
 package eu.kanade.presentation.entries.anime
 
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
@@ -14,6 +16,7 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
@@ -26,8 +29,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -51,6 +56,7 @@ import androidx.compose.ui.util.fastAll
 import androidx.compose.ui.util.fastAny
 import androidx.compose.ui.util.fastMap
 import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.OnBackPressed
 import cafe.adriel.voyager.navigator.currentOrThrow
 import eu.kanade.domain.entries.anime.model.episodesFiltered
 import eu.kanade.presentation.entries.DownloadAction
@@ -159,87 +165,109 @@ fun AnimeScreen(
         navigator.push(SourcePreferencesScreen(state.source.id))
     }.takeIf { state.source is ConfigurableAnimeSource }
 
-    if (!isTabletUi) {
-        AnimeScreenSmallImpl(
-            state = state,
-            snackbarHostState = snackbarHostState,
-            dateRelativeTime = dateRelativeTime,
-            dateFormat = dateFormat,
-            fetchInterval = fetchInterval,
-            episodeSwipeStartAction = episodeSwipeStartAction,
-            episodeSwipeEndAction = episodeSwipeEndAction,
-            showNextEpisodeAirTime = showNextEpisodeAirTime,
-            alwaysUseExternalPlayer = alwaysUseExternalPlayer,
-            onBackClicked = onBackClicked,
-            onEpisodeClicked = onEpisodeClicked,
-            onDownloadEpisode = onDownloadEpisode,
-            onAddToLibraryClicked = onAddToLibraryClicked,
-            onWebViewClicked = onWebViewClicked,
-            onWebViewLongClicked = onWebViewLongClicked,
-            onTrackingClicked = onTrackingClicked,
-            onTagSearch = onTagSearch,
-            onCopyTagToClipboard = onCopyTagToClipboard,
-            onFilterClicked = onFilterButtonClicked,
-            onRefresh = onRefresh,
-            onContinueWatching = onContinueWatching,
-            onSearch = onSearch,
-            onCoverClicked = onCoverClicked,
-            onShareClicked = onShareClicked,
-            onDownloadActionClicked = onDownloadActionClicked,
-            onEditCategoryClicked = onEditCategoryClicked,
-            onEditIntervalClicked = onEditFetchIntervalClicked,
-            onMigrateClicked = onMigrateClicked,
-            changeAnimeSkipIntro = changeAnimeSkipIntro,
-            onMultiBookmarkClicked = onMultiBookmarkClicked,
-            onMultiMarkAsSeenClicked = onMultiMarkAsSeenClicked,
-            onMarkPreviousAsSeenClicked = onMarkPreviousAsSeenClicked,
-            onMultiDeleteClicked = onMultiDeleteClicked,
-            onEpisodeSwipe = onEpisodeSwipe,
-            onEpisodeSelected = onEpisodeSelected,
-            onAllEpisodeSelected = onAllEpisodeSelected,
-            onInvertSelection = onInvertSelection,
-            onSettingsClicked = onSettingsClicked,
-        )
+    var pass = true
+
+    val tags = state.anime.genre
+    if (!tags.isNullOrEmpty()) {
+        val excludedTags = setOf("ecchi", "Ecchi")
+        val shouldExclude = tags.none { excludedTags.contains(it) }
+        if (!shouldExclude) {
+            Log.d("FamFilter", "Not allowed: ${state.anime.title}, Tags: ${state.anime.genre}")
+            pass = false
+        } else {
+            Log.d("FamFilter", "Allowed: ${state.anime.title}, Tags: ${state.anime.genre}")
+        }
+    }
+
+    if (pass){
+        if (!isTabletUi) {
+            AnimeScreenSmallImpl(
+                state = state,
+                snackbarHostState = snackbarHostState,
+                dateRelativeTime = dateRelativeTime,
+                dateFormat = dateFormat,
+                fetchInterval = fetchInterval,
+                episodeSwipeStartAction = episodeSwipeStartAction,
+                episodeSwipeEndAction = episodeSwipeEndAction,
+                showNextEpisodeAirTime = showNextEpisodeAirTime,
+                alwaysUseExternalPlayer = alwaysUseExternalPlayer,
+                onBackClicked = onBackClicked,
+                onEpisodeClicked = onEpisodeClicked,
+                onDownloadEpisode = onDownloadEpisode,
+                onAddToLibraryClicked = onAddToLibraryClicked,
+                onWebViewClicked = onWebViewClicked,
+                onWebViewLongClicked = onWebViewLongClicked,
+                onTrackingClicked = onTrackingClicked,
+                onTagSearch = onTagSearch,
+                onCopyTagToClipboard = onCopyTagToClipboard,
+                onFilterClicked = onFilterButtonClicked,
+                onRefresh = onRefresh,
+                onContinueWatching = onContinueWatching,
+                onSearch = onSearch,
+                onCoverClicked = onCoverClicked,
+                onShareClicked = onShareClicked,
+                onDownloadActionClicked = onDownloadActionClicked,
+                onEditCategoryClicked = onEditCategoryClicked,
+                onEditIntervalClicked = onEditFetchIntervalClicked,
+                onMigrateClicked = onMigrateClicked,
+                changeAnimeSkipIntro = changeAnimeSkipIntro,
+                onMultiBookmarkClicked = onMultiBookmarkClicked,
+                onMultiMarkAsSeenClicked = onMultiMarkAsSeenClicked,
+                onMarkPreviousAsSeenClicked = onMarkPreviousAsSeenClicked,
+                onMultiDeleteClicked = onMultiDeleteClicked,
+                onEpisodeSwipe = onEpisodeSwipe,
+                onEpisodeSelected = onEpisodeSelected,
+                onAllEpisodeSelected = onAllEpisodeSelected,
+                onInvertSelection = onInvertSelection,
+                onSettingsClicked = onSettingsClicked,
+            )
+        } else {
+            AnimeScreenLargeImpl(
+                state = state,
+                snackbarHostState = snackbarHostState,
+                dateRelativeTime = dateRelativeTime,
+                episodeSwipeStartAction = episodeSwipeStartAction,
+                episodeSwipeEndAction = episodeSwipeEndAction,
+                showNextEpisodeAirTime = showNextEpisodeAirTime,
+                alwaysUseExternalPlayer = alwaysUseExternalPlayer,
+                dateFormat = dateFormat,
+                fetchInterval = fetchInterval,
+                onBackClicked = onBackClicked,
+                onEpisodeClicked = onEpisodeClicked,
+                onDownloadEpisode = onDownloadEpisode,
+                onAddToLibraryClicked = onAddToLibraryClicked,
+                onWebViewClicked = onWebViewClicked,
+                onWebViewLongClicked = onWebViewLongClicked,
+                onTrackingClicked = onTrackingClicked,
+                onTagSearch = onTagSearch,
+                onCopyTagToClipboard = onCopyTagToClipboard,
+                onFilterButtonClicked = onFilterButtonClicked,
+                onRefresh = onRefresh,
+                onContinueWatching = onContinueWatching,
+                onSearch = onSearch,
+                onCoverClicked = onCoverClicked,
+                onShareClicked = onShareClicked,
+                onDownloadActionClicked = onDownloadActionClicked,
+                onEditCategoryClicked = onEditCategoryClicked,
+                onEditIntervalClicked = onEditFetchIntervalClicked,
+                changeAnimeSkipIntro = changeAnimeSkipIntro,
+                onMigrateClicked = onMigrateClicked,
+                onMultiBookmarkClicked = onMultiBookmarkClicked,
+                onMultiMarkAsSeenClicked = onMultiMarkAsSeenClicked,
+                onMarkPreviousAsSeenClicked = onMarkPreviousAsSeenClicked,
+                onMultiDeleteClicked = onMultiDeleteClicked,
+                onEpisodeSwipe = onEpisodeSwipe,
+                onEpisodeSelected = onEpisodeSelected,
+                onAllEpisodeSelected = onAllEpisodeSelected,
+                onInvertSelection = onInvertSelection,
+                onSettingsClicked = onSettingsClicked,
+            )
+        }
     } else {
-        AnimeScreenLargeImpl(
-            state = state,
-            snackbarHostState = snackbarHostState,
-            dateRelativeTime = dateRelativeTime,
-            episodeSwipeStartAction = episodeSwipeStartAction,
-            episodeSwipeEndAction = episodeSwipeEndAction,
-            showNextEpisodeAirTime = showNextEpisodeAirTime,
-            alwaysUseExternalPlayer = alwaysUseExternalPlayer,
-            dateFormat = dateFormat,
-            fetchInterval = fetchInterval,
+        Toast.makeText(context, "No famly", Toast.LENGTH_SHORT)
+            .show()
+        NotAllowed(
             onBackClicked = onBackClicked,
-            onEpisodeClicked = onEpisodeClicked,
-            onDownloadEpisode = onDownloadEpisode,
-            onAddToLibraryClicked = onAddToLibraryClicked,
-            onWebViewClicked = onWebViewClicked,
-            onWebViewLongClicked = onWebViewLongClicked,
-            onTrackingClicked = onTrackingClicked,
-            onTagSearch = onTagSearch,
-            onCopyTagToClipboard = onCopyTagToClipboard,
-            onFilterButtonClicked = onFilterButtonClicked,
-            onRefresh = onRefresh,
-            onContinueWatching = onContinueWatching,
-            onSearch = onSearch,
-            onCoverClicked = onCoverClicked,
-            onShareClicked = onShareClicked,
-            onDownloadActionClicked = onDownloadActionClicked,
-            onEditCategoryClicked = onEditCategoryClicked,
-            onEditIntervalClicked = onEditFetchIntervalClicked,
-            changeAnimeSkipIntro = changeAnimeSkipIntro,
-            onMigrateClicked = onMigrateClicked,
-            onMultiBookmarkClicked = onMultiBookmarkClicked,
-            onMultiMarkAsSeenClicked = onMultiMarkAsSeenClicked,
-            onMarkPreviousAsSeenClicked = onMarkPreviousAsSeenClicked,
-            onMultiDeleteClicked = onMultiDeleteClicked,
-            onEpisodeSwipe = onEpisodeSwipe,
-            onEpisodeSelected = onEpisodeSelected,
-            onAllEpisodeSelected = onAllEpisodeSelected,
-            onInvertSelection = onInvertSelection,
-            onSettingsClicked = onSettingsClicked,
         )
     }
 }
@@ -879,6 +907,25 @@ private fun SharedAnimeBottomActionMenu(
         isManga = false,
     )
 }
+
+@Composable
+private fun NotAllowed (
+    onBackClicked: () -> Unit,
+) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = "This is not famly :(",
+            style = MaterialTheme.typography.bodyMedium,
+        )
+        Button(onClick = onBackClicked) {
+            Text(text = "Back")
+        }
+    }
+}
+
 
 private fun LazyListScope.sharedEpisodeItems(
     anime: Anime,
