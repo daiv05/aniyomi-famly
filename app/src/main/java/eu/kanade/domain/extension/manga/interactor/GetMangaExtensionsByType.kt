@@ -13,7 +13,7 @@ class GetMangaExtensionsByType(
 ) {
 
     fun subscribe(): Flow<MangaExtensions> {
-        val showNsfwSources = false;
+        val showNsfwSources = false
 
         return combine(
             preferences.enabledLanguages().changes(),

@@ -31,7 +31,7 @@ import java.io.File
 internal object AnimeExtensionLoader {
 
     private val preferences: SourcePreferences by injectLazy()
-    private const val loadNsfwSource: Boolean = false;
+    private const val loadNsfwSource: Boolean = false
 
     private const val EXTENSION_FEATURE = "tachiyomi.animeextension"
     private const val METADATA_SOURCE_CLASS = "tachiyomi.animeextension.class"

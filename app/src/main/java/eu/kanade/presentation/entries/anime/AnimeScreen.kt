@@ -56,7 +56,6 @@ import androidx.compose.ui.util.fastAll
 import androidx.compose.ui.util.fastAny
 import androidx.compose.ui.util.fastMap
 import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.OnBackPressed
 import cafe.adriel.voyager.navigator.currentOrThrow
 import eu.kanade.domain.entries.anime.model.episodesFiltered
 import eu.kanade.presentation.entries.DownloadAction
@@ -179,7 +178,7 @@ fun AnimeScreen(
         }
     }
 
-    if (pass){
+    if (pass) {
         if (!isTabletUi) {
             AnimeScreenSmallImpl(
                 state = state,
@@ -909,7 +908,7 @@ private fun SharedAnimeBottomActionMenu(
 }
 
 @Composable
-private fun NotAllowed (
+private fun NotAllowed(
     onBackClicked: () -> Unit,
 ) {
     Box(
@@ -925,7 +924,6 @@ private fun NotAllowed (
         }
     }
 }
-
 
 private fun LazyListScope.sharedEpisodeItems(
     anime: Anime,

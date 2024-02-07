@@ -809,7 +809,7 @@ private fun SharedMangaBottomActionMenu(
 }
 
 @Composable
-private fun NotAllowed (
+private fun NotAllowed(
     onBackClicked: () -> Unit,
 ) {
     Box(
@@ -825,7 +825,6 @@ private fun NotAllowed (
         }
     }
 }
-
 
 private fun LazyListScope.sharedChapterItems(
     manga: Manga,
